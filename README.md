@@ -16,6 +16,7 @@ chmod +x scripts/log_summarizer.sh
 chmod +x scripts/deploy.sh
 
 
+![alt text] https://app.eraser.io/workspace/QQqrgT4JItgo6OTF2Ojo
 
 
 File/Folder	Purpose
