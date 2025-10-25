@@ -17,7 +17,8 @@ chmod +x scripts/deploy.sh
 
 
 ![alt text] https://app.eraser.io/workspace/QQqrgT4JItgo6OTF2Ojo
-
+![alt text] https://github.com/hariingit/note-apiservice/blob/main/noteapiarchitecture.svg
+![alt tag] https://github.com/hariingit/note-apiservice/blob/main/noteapiarchitecture.svg
 
 File/Folder	Purpose
 README.md	Project documentation
