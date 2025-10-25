@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'ECS Fargate Service with ALB, ECR, IAM roles, and logging'
+Description: 'ECS Fargate Service with ECR, IAM roles, and logging (without ALB)'
 
 Parameters:
   Environment:
@@ -9,10 +9,6 @@ Parameters:
       - prod
     Default: dev
 
-  CertificateArn:
-    Type: String
-    Description: ACM Certificate ARN for ALB HTTPS
-
   LogsBucketName:
     Type: String
     Description: S3 Bucket name for application logs
@@ -21,14 +17,6 @@ Parameters:
   VpcId:
     Type: AWS::SSM::Parameter::Value<String>
     Default: '/network/dev/vpc-id'
-
-  PublicSubnet1:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: '/network/dev/public-subnet-1'
-
-  PublicSubnet2:
-    Type: AWS::SSM::Parameter::Value<String>
-    Default: '/network/dev/public-subnet-2'
 
   PrivateSubnet1:
     Type: AWS::SSM::Parameter::Value<String>
@@ -157,24 +145,6 @@ Resources:
                   - s3:AbortMultipartUpload
                 Resource: !Sub 'arn:aws:s3:::${LogsBucketName}/note-api/${Environment}/*'
 
-  AlbSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: ALB security group
-      VpcId: !Ref VpcId
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: -1
-          CidrIp: 0.0.0.0/0
-
   TaskSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -184,70 +154,10 @@ Resources:
         - IpProtocol: tcp
           FromPort: 8080
           ToPort: 8080
-          SourceSecurityGroupId: !Ref AlbSecurityGroup
+          CidrIp: 10.0.0.0/16
       SecurityGroupEgress:
         - IpProtocol: -1
           CidrIp: 0.0.0.0/0
-
-  LoadBalancer:
-    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
-    Properties:
-      Name: !Sub 'note-api-${Environment}'
-      Type: application
-      Scheme: internet-facing
-      IpAddressType: ipv4
-      Subnets:
-        - !Ref PublicSubnet1
-        - !Ref PublicSubnet2
-      SecurityGroups:
-        - !Ref AlbSecurityGroup
-
-  TargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      Name: !Sub 'note-api-${Environment}'
-      Port: 8080
-      Protocol: HTTP
-      TargetType: ip
-      VpcId: !Ref VpcId
-      HealthCheckEnabled: true
-      HealthCheckPath: /healthz
-      HealthCheckProtocol: HTTP
-      HealthCheckIntervalSeconds: 30
-      HealthyThresholdCount: 2
-      UnhealthyThresholdCount: 3
-      Matcher:
-        HttpCode: 200
-      #DeregistrationDelay: 5
-
-  HttpsListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 443
-      Protocol: HTTPS
-      Certificates:
-        - CertificateArn: !Ref CertificateArn
-      SslPolicy: ELBSecurityPolicy-TLS-1-2-2017-01
-      DefaultActions:
-        - Type: forward
-          TargetGroupArn: !Ref TargetGroup
-
-  HttpListener:
-    Type: AWS::ElasticLoadBalancingV2::Listener
-    Properties:
-      LoadBalancerArn: !Ref LoadBalancer
-      Port: 80
-      Protocol: HTTP
-      DefaultActions:
-        - Type: redirect
-          RedirectConfig:
-            Protocol: HTTPS
-            Port: '443'
-            Host: '#{host}'
-            Path: '/#{path}'
-            Query: '#{query}'
-            StatusCode: HTTP_301
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
@@ -280,3 +190,21 @@ Resources:
               Value: !Ref LogsBucketName
             - Name: LOG_PREFIX
               Value: !Sub 'note-api/${Environment}'
+
+Outputs:
+  EcsClusterName:
+    Description: ECS Cluster name
+    Value: !Ref EcsCluster
+
+  TaskDefinitionArn:
+    Description: Task Definition ARN
+    Value: !Ref TaskDefinition
+
+  EcrUri:
+    Description: ECR repository URI
+    Value: !Sub '${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${EcrRepository}'
+
+  TaskSecurityGroupId:
+    Description: Task Security Group ID
+    Value: !Ref TaskSecurityGroup
+
