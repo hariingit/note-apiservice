@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e  # Exit on error
-
+set -euo pipefail
 # Usage: ./scripts/deploy.sh <env> <version>
 # Example: ./scripts/deploy.sh dev v1.3.0
 

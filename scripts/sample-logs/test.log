@@ -1,0 +1,4 @@
+2025-10-25T14:00:00Z INFO Starting app
+2025-10-25T14:05:00Z ERROR Failed to connect to database
+2025-10-25T14:05:01Z ERROR Failed to connect to database
+2025-10-25T14:10:00Z WARN Memory usage high
