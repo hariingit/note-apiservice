@@ -1,3 +1,19 @@
-{"minute":"2025-10-25T14:05Z","signature":"2025-10-25T14:05:00Z ERROR Failed to connect to database","count":1}
-{"minute":"2025-10-25T14:05Z","signature":"2025-10-25T14:05:01Z ERROR Failed to connect to database","count":1}
+{"minute":"2025-10-25T14:05Z","signature":"2025-10-25T14:05:00Z ERROR Failed to connect to database","count":13}
+{"minute":"2025-10-25T14:05Z","signature":"2025-10-25T14:05:01Z ERROR Failed to connect to database","count":13}
+{"minute":"2025-10-25T14:10Z","signature":"2025-10-25T14:10:00Z WARN Memory usage high2025-10-26T15:23:10Z ERROR Failed to connect to database: timeout after 10s","count":11}
 {"minute":"2025-10-25T14:30Z","signature":"2025-10-25T14:30:15Z ERROR Sample error message","count":1}
+{"minute":"2025-10-26T14:56Z","signature":"2025-10-26T14:56:10Z ERROR Exception in ASGI application","count":10}
+{"minute":"2025-10-26T14:56Z","signature":"2025-10-26T14:56:10Z ERROR ValueError: invalid literal for int() with base 10: 'abc'","count":10}
+{"minute":"2025-10-26T15:05Z","signature":"2025-10-26T15:05:15Z ERROR Database connection failed: timeout after 10s","count":10}
+{"minute":"2025-10-26T15:10Z","signature":"2025-10-26T15:10:00Z ERROR User authentication failed: invalid credentials","count":10}
+{"minute":"2025-10-26T15:23Z","signature":"2025-10-26T15:23:10Z ERROR Failed to connect to database: timeout after 10s","count":2}
+{"minute":"2025-10-26T15:23Z","signature":"2025-10-26T15:23:15Z ERROR Failed to connect to database: timeout after 10s","count":13}
+{"minute":"2025-10-26T16:42Z","signature":"2025-10-26T16:42:05Z ERROR Access denied for user 'admin'@'10.0.0.1'","count":26}
+{"minute":"2025-10-26T16:42Z","signature":"2025-10-26T16:42:08Z ERROR Access denied for user 'admin'@'10.0.0.1'","count":26}
+{"minute":"2025-10-27T00:05Z","signature":"2025-10-27T00:05:30Z ERROR Could not establish connection: network unreachable","count":26}
+{"minute":"2025-10-27T00:05Z","signature":"2025-10-27T00:05:33Z ERROR Could not establish connection: network unreachable","count":26}
+{"minute":"2025-10-27T00:10Z","signature":"2025-10-27T00:10:42Z ERROR Client disconnected unexpectedly","count":10}
+{"minute":"2025-10-27T01:00Z","signature":"2025-10-27T01:00:12Z ERROR Too many connections for user 'webapp'","count":13}
+{"minute":"2025-10-27T01:00Z","signature":"2025-10-27T01:00:17Z ERROR Too many connections for user 'webapp'","count":13}
+{"minute":"2025-10-27T01:15Z","signature":"2025-10-27T01:15:00Z ERROR Table 'orders' is full","count":13}
+{"minute":"2025-10-27T01:15Z","signature":"2025-10-27T01:15:02Z ERROR Table 'orders' is full","count":13}
