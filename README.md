@@ -1,6 +1,6 @@
 # note-apiservice
 
-# Prerequisites
+## Prerequisites
 - AWS CLI
 
 - Docker
@@ -11,9 +11,9 @@
 
 - Python 3.11+
 
-- At least 2GB RAM  5GB free disk space (for local Docker and build operations)
+- At least 2GB RAM and 5GB free disk space (for local Docker and build operations)
 
-# 1. Create all Files and  directories
+## 1. Create all Files and  directories
 ```
 mkdir -p app infra scripts policy
 
@@ -26,7 +26,7 @@ touch scripts/deploy.sh
 touch policy/lpa-check.grep
 ```
 
-# 2. Project Layout
+## 2. Project Layout
 | File/Folder               | Purpose                                      |
 |--------------------------|----------------------------------------------|
 | README.md                | Project documentation                         |
@@ -52,22 +52,21 @@ text
    └─ lpa-check.grep     # Optional policy checker patterns
 ```
 
-# 3. Architecture
+## 3. Introduction
 ![Note API Architecture](https://github.com/hariingit/note-apiservice/raw/main/noteapiarchitecture.svg)
 
 
-- Deploy a VPC with public and private subnets, security groups for network isolation.
+- Application Load Balancer terminates TLS 1.2+ sessions using an ACM certificate for secure HTTPS traffic.​
 
-- Push container images to ECR and run the Note API service on ECS Fargate.
+- HTTP is redirected to HTTPS, and only HTTPS is allowed by ALB security groups.​
 
-- Use an Application Load Balancer to route traffic to ECS tasks.
+- Traffic is decrypted at the ALB, then forwarded to ECS tasks in private subnets with no public IPs.​
 
-- Manage infrastructure as code with CloudFormation templates for repeatability.
+- Security groups allow only ALB-to-ECS communication; app outbound goes via NAT for egress.
 
-- Automate deployment and logging with bash scripts and apply least-privileged IAM policies.
+- ECS task config and secrets are pulled securely from SSM Parameter Store using least-privileged IAM roles.​
 
-
-# 4. Depoly Network stack 
+## 4. Depoly Network stack 
 Runing infra/network.cfn.yaml
 ```
  aws cloudformation deploy \
@@ -77,7 +76,7 @@ Runing infra/network.cfn.yaml
   --capabilities CAPABILITY_IAM
 ```
 
-# 5. Deploy Service Stack
+## 5. Deploy Service Stack
 
 ```
 aws cloudformation deploy \
@@ -94,7 +93,7 @@ aws cloudformation deploy \
   --capabilities CAPABILITY_NAMED_IAM
 ```
 
-# 6. Run Log Summarizer
+## 6. Run Log Summarizer
 
 ```
 # Usage:
@@ -105,7 +104,7 @@ aws cloudformation deploy \
 #   ./log_summarizer.sh sample-logs out.jsonl
 ```
 
-# 7. Run deploy.sh script
+## 7. Run deploy.sh script
 
 ```
 # Make script executable
@@ -118,9 +117,8 @@ chmod +x scripts/deploy.sh
 ```
 
 
-# 8. Access grant python script
+## 8. Access grant python script
 ```
-./scripts/log_summarizer.sh logs/summary.log
 Grant Access
 
 python3 scripts/access_grant.py grant username-or-role
@@ -129,17 +127,27 @@ Revoke Access
 python3 scripts/access_grant.py revoke username-or-role
 ```
 
-# 9. Running cfn-lint
+## 9. Running cfn-lint
 ```
 usage:
 Basic: cfn-lint test.yaml
 Ignore a rule: cfn-lint -i E3012 -- test.yaml
 Configure a rule: cfn-lint -x E3012:strict=true -t test.yaml
 Lint all yaml files in a folder: cfn-lint dir/**/*.yaml
+
+
+cfn-lint infra/network.cfn.yaml infra/service.cfn.yaml
+
+```
+## 10. Scanning Docker Image
+```
+trivy image -o trivy-image-report.json python:3.11-slim
+INFO	[vulndb] Need to update DB
+INFO	[vulndb] Downloading vulnerability DB...
+INFO	[vulndb] Downloading artifact...	repo="mirror.gcr.io/aquasec/trivy-db:2"
 ```
 
-
-# 10. Design Trade-Offs
+## 11. Design Trade-Offs
 - Uses CloudFormation for declarative infrastructure automation
 
 - Splits network and service stacks for modularity and reuse
