@@ -37,6 +37,7 @@ touch policy/lpa-check.grep
 | scripts/deploy.sh        | End-to-end deployment script                   |
 | policy/lpa-check.grep    | (Optional) Matchers for least-privileged access audit |
 
+```
 text
 ├─ README.md
 ├─ app/                  # Optional: HTTP server or app source/image
@@ -49,7 +50,7 @@ text
 │  └─ access_grant.py    # Python script to grant/revoke access (IAM/user roles)
 └─ policy/
    └─ lpa-check.grep     # Optional policy checker patterns
-
+```
 
 # 3. Architecture
 ![Note API Architecture](https://github.com/hariingit/note-apiservice/raw/main/noteapiarchitecture.svg)
