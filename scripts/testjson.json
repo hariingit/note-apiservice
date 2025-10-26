@@ -1,0 +1,8 @@
+{
+  "access_list": [
+    {"name": "testuser"},
+    {"name": "testuser2"},
+    {"name": "role1"}
+  ]
+}
+

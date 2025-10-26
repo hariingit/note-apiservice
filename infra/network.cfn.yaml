@@ -21,7 +21,7 @@ Conditions:
 Resources:
   VPC:
     Type: AWS::EC2::VPC
-    Properties:
+    Properties:s3
       CidrBlock: !Ref VpcCIDR
       EnableDnsSupport: true
       EnableDnsHostnames: true
